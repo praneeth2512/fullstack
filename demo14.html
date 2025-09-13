@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colorful Interactive jQuery Example</title>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f8ff;
+      margin: 30px;
+      text-align: center;
+      color: #333;
+    }
+
+    h2 {
+      color: #ff5733;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      color: #33aaff;
+      margin-bottom: 20px;
+    }
+
+    .temp {
+      background-color: #ffeeba;
+      border: 2px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      color: #555;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 2px solid #33aaff;
+      margin-bottom: 15px;
+    }
+
+    #output {
+      font-size: 18px;
+      font-weight: 500;
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+
+    ul#list {
+      list-style: square inside;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+
+    ul#list li {
+      background: #d1ecf1;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Hello jQuery</h2>
+  <h3>Interactive Demo with Colors</h3>
+
+  <button id="btn">Click Me</button>
+
+  <div class="temp">
+    <p>This vibrant area shows the power of jQuery in manipulating CSS styles by working with class selectors.</p>
+  </div>
+
+  <input type="text" id="myInput" placeholder="Type something here...">
+  <p id="output">Hi, this text will change as you type.</p>
+
+  <ul id="list">
+    <li>Item 1</li>
+  </ul>
+
+  <button id="add">Add Item</button>
+  <button id="addf">Add Item First</button>
+  <button id="remove">Remove First Item</button>
+
+  <script>
+    $(document).ready(function () {
+      $("#btn").click(function () {
+        $("h2").text("Button Clicked!");
+        $("h3").text("Button Clicked! Duplicate");
+        $(".temp").css("background-color", "#ffeb3b"); // bright yellow
+        $("p").css("font-weight", "bold");
+      });
+
+      $("#add").click(function () {
+        $("#list").append("<li>New Item appended from script</li>");
+      });
+
+      $("#addf").click(function () {
+        $("#list").prepend("<li>New Item prepended from script</li>");
+      });
+
+      $("#remove").click(function () {
+        $("#list li:first").remove();
+      });
+
+      $("#myInput").keydown(function () {
+        let val = $("#myInput").val();
+        $("#output").text(val);
+      });
+
+      $("#btn").dblclick(function () {
+        $("h2").text("Button Clicked Twice!");
+        $("h3").text("Button Clicked! Twice Duplicate");
+        $(".temp").css("background-color", "#ff7043"); // light orange
+        $("p").css("font-family", "Calibri, sans-serif");
+      });
+
+      $("#btn").hover(function () {
+        $("h2").text("Button Clicked but Hovered!");
+        $("h3").text("Button and Hovered! Duplicate");
+        $(".temp").css("background-color", "#00bcd4"); // cyan
+        $("p").css("font-style", "italic");
+      });
+    });
+  </script>
+
+</body>
+
+</html>

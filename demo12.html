@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Biodata with Projects</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f9;
+    margin: 0;
+    padding: 20px;
+  }
+  .biodata {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  .biodata h2 {
+    margin-top: 0;
+  }
+  .projects-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  .projects-container h3 {
+    margin-top: 0;
+  }
+  .project-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .project-list li {
+    background: #e0e7ff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 6px;
+  }
+  form {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  input[type="text"] {
+    flex: 1 1 200px;
+    padding: 8px;
+    font-size: 1em;
+  }
+  button {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #3730a3;
+  }
+</style>
+</head>
+<body>
+
+<div class="biodata">
+  <h2>prabhas</h2>
+  <p><strong>Age:</strong> 25</p>
+  <p><strong>Email:</strong> prabha@gmail.com</p>
+  <p><strong>Phone:</strong> 7476379839</p>
+  <p><strong>Address:</strong> housing board,hyd</p>
+</div>
+
+<div class="projects-container">
+  <h3>Projects</h3>
+  <ul class="project-list" id="projectList">
+    <!-- Project items will appear here -->
+  </ul>
+
+  <form id="projectForm">
+    <input type="text" id="projectName" placeholder="Project Name" required />
+    <input type="text" id="projectDesc" placeholder="Project Description" required />
+    <button type="submit">Add Project</button>
+  </form>
+</div>
+
+<script>
+  const projectForm = document.getElementById('projectForm');
+  const projectList = document.getElementById('projectList');
+
+  projectForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nameInput = document.getElementById('projectName');
+    const descInput = document.getElementById('projectDesc');
+
+    const name = nameInput.value.trim();
+    const desc = descInput.value.trim();
+
+    if(name && desc) {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${name}</strong>: ${desc}`;
+      projectList.appendChild(li);
+
+      // Clear inputs
+      nameInput.value = '';
+      descInput.value = '';
+      nameInput.focus();
+    }
+  });
+</script>
+
+</body>
+</html>
