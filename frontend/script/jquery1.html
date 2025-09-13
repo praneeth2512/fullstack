@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multiple Ways to Change Heading</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- React & ReactDOM UMD builds -->
+  <script
+    crossorigin
+    src="https://unpkg.com/react@18/umd/react.development.js"
+  ></script>
+  <script
+    crossorigin
+    src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+  ></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    section {
+      margin-bottom: 60px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 30px;
+    }
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Vanilla JS Section -->
+  <section>
+    <h2>Vanilla JavaScript</h2>
+    <h1 id="vanillaHeading" style="color: navy; text-align: center;">
+      Welcome to Vanilla JS
+    </h1>
+    <button
+      id="vanillaBtn"
+      class="btn btn-outline-primary d-block mx-auto"
+      style="width: 120px;"
+    >
+      Click Me
+    </button>
+  </section>
+
+  <!-- jQuery Section -->
+  <section>
+    <h2>jQuery with Fade Effect</h2>
+    <h1 id="jqueryHeading" style="color: darkgreen; text-align: center;">
+      Welcome to jQuery
+    </h1>
+    <button
+      id="jqueryBtn"
+      class="btn btn-success d-block mx-auto"
+      style="width: 120px;"
+    >
+      Click Me
+    </button>
+  </section>
+
+  <!-- React Section -->
+  <section>
+    <h2>React Example</h2>
+    <div id="reactRoot" style="text-align: center; color: #007bff;"></div>
+  </section>
+
+  <!-- Bootstrap styled static example -->
+  <section>
+    <h2>Bootstrap Styling Example</h2>
+    <h1 id="bootstrapHeading" class="text-primary text-center mb-3">
+      Welcome to Bootstrap & jQuery
+    </h1>
+    <button
+      id="bootstrapBtn"
+      class="btn btn-primary d-block mx-auto"
+      style="width: 120px;"
+    >
+      Click Me
+    </button>
+  </section>
+
+  <script>
+    // Vanilla JS
+    document.getElementById("vanillaBtn").addEventListener("click", () => {
+      document.getElementById("vanillaHeading").textContent = "Button Clicked";
+    });
+
+    // jQuery with fade effect
+    $("#jqueryBtn").click(() => {
+      $("#jqueryHeading").fadeOut(400, () => {
+        $("#jqueryHeading").text("Button Clicked").fadeIn(400);
+      });
+    });
+
+    // Bootstrap + jQuery
+    $("#bootstrapBtn").click(() => {
+      $("#bootstrapHeading").text("Button Clicked");
+    });
+  </script>
+
+  <!-- React script -->
+  <script type="text/javascript">
+    const e = React.createElement;
+
+    function ReactExample() {
+      const [heading, setHeading] = React.useState("Welcome to React");
+
+      return e(
+        "div",
+        { style: { marginTop: "20px" } },
+        e(
+          "h1",
+          { style: { color: "#007bff", marginBottom: "15px" } },
+          heading
+        ),
+        e(
+          "button",
+          {
+            onClick: () => setHeading("Button Clicked"),
+            style: {
+              padding: "10px 20px",
+              fontSize: "16px",
+              cursor: "pointer",
+              borderRadius: "5px",
+              border: "1px solid #007bff",
+              backgroundColor: "#fff",
+              color: "#007bff",
+            },
+            className: "btn"
+          },
+          "Click Me"
+        )
+      );
+    }
+
+    const domContainer = document.querySelector("#reactRoot");
+    ReactDOM.createRoot(domContainer).render(e(ReactExample));
+  </script>
+</body>
+</html>

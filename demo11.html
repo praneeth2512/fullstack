@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      padding: 2rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .temp {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      background: #eee;
+    }
+
+    input {
+      padding: 0.5rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    li {
+      background: #ddd;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    /* Dark Theme */
+    .dark-theme {
+      background: #121212;
+      color: #fff;
+    }
+
+    .dark-theme .temp {
+      background: #333;
+    }
+
+    .dark-theme li {
+      background: #1f1f1f;
+    }
+
+    /* Card Style */
+    .card-style {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container card-style">
+
+    <h2>Hello jQuery Combined Example</h2>
+
+    <button id="btn">Click Me</button>
+    <button id="theme-light">Light Theme</button>
+    <button id="theme-dark">Dark Theme</button>
+    <button id="theme-card">Card Style</button>
+
+    <div class="temp">
+      <p>This is a temp section controlled by jQuery.</p>
+    </div>
+
+    <input type="text" id="myInput" placeholder="Type something..."/>
+    <p id="output">Your input appears here</p>
+
+    <ul id="list">
+      <li>Initial Item</li>
+    </ul>
+
+    <button id="add">Append Item</button>
+    <button id="addf">Prepend Item</button>
+    <button id="remove">Remove Last Item</button>
+
+  </div>
+
+  <script>
+    $(function(){
+
+      // Button Click
+      $("#btn").click(function(){
+        $(".temp").css("background", "#a5d6a7");
+        $("#output").text("Button Clicked!");
+      });
+
+      // Add / Prepend / Remove
+      $("#add").click(()=> $("#list").append("<li>Appended Item</li>"));
+      $("#addf").click(()=> $("#list").prepend("<li>Prepended Item</li>"));
+      $("#remove").click(()=> $("#list li:last").remove());
+
+      // Input live display
+      $("#myInput").on('input', function(){
+        $("#output").text($(this).val());
+      });
+
+      // Double click
+      $("#btn").dblclick(function(){
+        $(".temp").css("background", "#81d4fa");
+      });
+
+      // Hover in/out
+      $("#btn").hover(
+        ()=> $(".temp").css("background", "#ffcc80"),
+        ()=> $(".temp").css("background", "#eee")
+      );
+
+      // Theme Switchers
+      $("#theme-light").click(function(){
+        $("body").removeClass("dark-theme").removeClass("card-style");
+      });
+
+      $("#theme-dark").click(function(){
+        $("body").addClass("dark-theme").removeClass("card-style");
+      });
+
+      $("#theme-card").click(function(){
+        $("body").removeClass("dark-theme").addClass("card-style");
+      });
+
+    });
+  </script>
+
+</body>
+</html>

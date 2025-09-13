@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Registration Form</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #fff7d6;
+    margin: 20px auto;
+    max-width: 900px;
+    color: #333;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo img {
+    width: 40px;
+    height: 40px;
+  }
+  .institute-info {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .ref-no {
+    font-size: 11px;
+    color: #999;
+    margin-top: 10px;
+  }
+  h1 {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 25px;
+    font-weight: bold;
+  }
+  .photo {
+    width: 120px;
+    height: 120px;
+    background: orange;
+    border: 1px solid #ccc;
+    position: relative;
+  }
+  .photo svg {
+    position: absolute;
+    top: 35%;
+    left: 30%;
+    width: 60px;
+    height: 60px;
+  }
+  section {
+    margin-bottom: 30px;
+  }
+  section h2 {
+    background: #f8971e;
+    color: #2f1f02;
+    padding: 6px 12px;
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  label {
+    display: inline-block;
+    width: 210px;
+    font-size: 14px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="date"],
+  textarea,
+  select {
+    width: 400px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    background: #eee;
+    font-size: 14px;
+    border-radius: 3px;
+  }
+  textarea {
+    height: 50px;
+    resize: vertical;
+  }
+  .gender-options {
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .gender-options label {
+    width: auto;
+    margin-right: 15px;
+  }
+  .terms {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .thumbs {
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .thumbs svg {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+  .signature-box {
+    margin-top: 12px;
+    width: 220px;
+    height: 60px;
+    background: #f8d88e;
+    border: 1px solid #e0c27c;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991121.png" alt="Book Icon" />
+    <div class="institute-info">
+      <div><strong>ABC Institute of Technology</strong></div>
+      <div>No 124/2,<br />Galle road,<br />Mountlavinia.</div>
+      <div>Tel: 011 1231231</div>
+      <div>E-mail: instituteABC@gmail.com</div>
+    </div>
+  </div>
+  <div>
+    <div class="ref-no">Ref No: 11573</div>
+    <div class="photo">
+      <!-- Simple hand-drawn style person -->
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="32" cy="16" r="8" />
+        <path d="M16 52c0-12 32-12 32 0" />
+        <path d="M20 28c0 8 24 8 24 0" />
+        <circle cx="24" cy="15" r="1" fill="#000"/>
+        <circle cx="40" cy="15" r="1" fill="#000"/>
+        <path d="M24 22c4 4 8 4 12 0" />
+      </svg>
+    </div>
+  </div>
+</header>
+
+<h1>Student Registration Form</h1>
+
+<form>
+  <section>
+    <h2>Student Information</h2>
+    <label for="fullname">Full Name:</label>
+    <input type="text" id="fullname" name="fullname" /><br /><br />
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" /><br /><br />
+
+    <label>Gender:</label>
+    <span class="gender-options">
+      <label><input type="radio" name="gender" value="male" /> Male</label>
+      <label><input type="radio" name="gender" value="female" /> Female</label>
+    </span>
+    <br /><br />
+
+    <label for="nationality">Nationality:</label>
+    <input type="text" id="nationality" name="nationality" /><br /><br />
+
+    <label for="contact">Contact Information:</label>
+    <input type="text" id="contact" name="contact" /><br /><br />
+  </section>
+
+  <section>
+    <h2>Parent/Guardian Information</h2>
+    <label for="guardianName">Parent/Guardian Name(s):</label>
+    <input type="text" id="guardianName" name="guardianName" /><br /><br />
+
+    <label for="relationship">Relationship to Student:</label>
+    <input type="text" id="relationship" name="relationship" /><br /><br />
+
+    <label for="guardianContact">Contact Information (Phone Number, Email):</label>
+    <input type="text" id="guardianContact" name="guardianContact" /><br /><br />
+
+    <label for="emergencyContact">Emergency Contact Information:</label>
+    <input type="text" id="emergencyContact" name="emergencyContact" /><br /><br />
+  </section>
+
+  <section>
+    <h2>Education Information</h2>
+    <label for="schoolName">School/Institution Name:</label>
+    <input type="text" id="schoolName" name="schoolName" /><br /><br />
+
+    <label for="graduationDate">Graduation Date (if applicable):</label>
+    <input type="date" id="graduationDate" name="graduationDate" /><br /><br />
+
+    <label for="hearAboutUs">How did you hear about us?</label>
+    <input type="text" id="hearAboutUs" name="hearAboutUs" style="width: 420px;" /><br /><br />
+
+    <label for="interest">Why are you interested in our program?</label>
+    <input type="text" id="interest" name="interest" style="width: 420px;" /><br /><br />
+  </section>
+
+  <section>
+    <label>Are you Agree to the terms and conditions of enrollment?</label>
+    <span class="thumbs">
+      <!-- thumbs up icon -->
+      <svg viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M2 20h2v-8H2v8zm20-9h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L13.17 4 7.59 9.59C7.22 9.95 7 10.45 7 11v9c0 1.1.9 2 2 2h7c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1c0-1.1-.9-2-2-2z"/></svg>
+      <!-- thumbs down icon -->
+      <svg viewBox="0 0 24 24" fill="blue" xmlns="http://www.w3.org/2000/svg"><path d="M22 4h-2v8h2V4zm-4 9h-7v-9h-.01l-4 4v9c0 1.1.9 2 2 2h7c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1c0-1.1-.9-2-2-2z"/></svg>
+    </span>
+    <br />
+    <small>Terms and Conditions</small>
+  </section>
+
+  <section>
+    <label>Signature of the student and, if the student is a minor, a parent or guardian</label><br />
+    <div class="signature-box"></div>
+  </section>
+</form>
+
+</body>
+</html>
