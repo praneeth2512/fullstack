@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Task Manager with Counters</title>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7fa;
+      margin: 30px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    input#newTaskInput {
+      width: 60%;
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+      border-radius: 6px;
+      border: 1px solid #007bff;
+    }
+
+    button#addTaskBtn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    button#addTaskBtn:hover {
+      background-color: #0056b3;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tasks, .completed {
+      flex: 1;
+      min-width: 300px;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .counter {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      min-height: 100px;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      cursor: grab;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .completed-item {
+      background-color: #28a745;
+    }
+
+    button.actionBtn {
+      background-color: #ffc107;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin-left: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.actionBtn:hover {
+      background-color: #e0a800;
+    }
+
+    @media (max-width: 800px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <input type="text" id="newTaskInput" placeholder="Enter new task..." />
+    <button id="addTaskBtn">➕ Add Task</button>
+  </div>
+
+  <div class="container">
+
+    <div class="tasks">
+      <h2>Pending Tasks</h2>
+      <div class="counter">0 Tasks</div>
+      <ul id="taskList"></ul>
+    </div>
+
+    <div class="completed">
+      <h2>Completed Tasks</h2>
+      <div class="counter">0 Tasks</div>
+      <ul id="completedList"></ul>
+    </div>
+
+  </div>
+
+  <script>
+    function updateCounters() {
+      $('.tasks .counter').text(`${$('#taskList li').length} Tasks`);
+      $('.completed .counter').text(`${$('#completedList li').length} Tasks`);
+    }
+
+    function saveState() {
+      localStorage.setItem('taskList', $('#taskList').html());
+      localStorage.setItem('completedList', $('#completedList').html());
+    }
+
+    function loadState() {
+      if (localStorage.getItem('taskList')) {
+        $('#taskList').html(localStorage.getItem('taskList'));
+      }
+      if (localStorage.getItem('completedList')) {
+        $('#completedList').html(localStorage.getItem('completedList'));
+      }
+      updateCounters();
+    }
+
+    $(document).ready(function () {
+      loadState();
+
+      $("#addTaskBtn").click(function () {
+        const taskText = $("#newTaskInput").val().trim();
+        if (taskText === '') return alert('Please enter a task!');
+        const newItem = `
+          <li class="task-item">
+            <span class="taskText">${taskText}</span>
+            <div>
+              <button class="completeBtn actionBtn">✔</button>
+              <button class="editBtn actionBtn">✏</button>
+              <button class="deleteBtn actionBtn">🗑</button>
+            </div>
+          </li>`;
+        $("#taskList").append(newItem);
+        $("#newTaskInput").val('');
+        updateCounters();
+        saveState();
+      });
+
+      $(document).on('click', '.completeBtn', function () {
+        const item = $(this).closest('li');
+        item.removeClass('task-item').addClass('completed-item');
+        item.find('.completeBtn').remove();
+        item.find('.editBtn').remove();
+        const undoBtn = '<button class="incompleteBtn actionBtn">↩</button>';
+        item.find('div').prepend(undoBtn);
+        $('#completedList').append(item);
+        updateCounters();
+        saveState();
+      });
+
+      $(document).on('click', '.incompleteBtn', function () {
+        const item = $(this).closest('li');
+        item.removeClass('completed-item').addClass('task-item');
+        item.find('.incompleteBtn').remove();
+        const controls = `
+          <button class="completeBtn actionBtn">✔</button>
+          <button class="editBtn actionBtn">✏</button>
+          <button class="deleteBtn actionBtn">🗑</button>`;
+        item.find('div').html(controls);
+        $('#taskList').append(item);
+        updateCounters();
+        saveState();
+      });
+
+      $(document).on('click', '.editBtn', function () {
+        const span = $(this).closest('li').find('.taskText');
+        const currentText = span.text();
+        const input = `<input type="text" class="editInput" value="${currentText}" />`;
+        span.replaceWith(input);
+        input.focus();
+      });
+
+      $(document).on('keypress', '.editInput', function (e) {
+        if (e.which === 13) {
+          const newText = $(this).val().trim();
+          if (newText === '') return alert('Task text cannot be empty.');
+          const span = `<span class="taskText">${newText}</span>`;
+          $(this).replaceWith(span);
+          updateCounters();
+          saveState();
+        }
+      });
+
+      $(document).on('click', '.deleteBtn', function () {
+        $(this).closest('li').fadeOut(300, function () {
+          $(this).remove();
+          updateCounters();
+          saveState();
+        });
+      });
+
+      // Drag & Drop
+      $("#taskList, #completedList").sortable({
+        connectWith: ".container ul",
+        placeholder: "ui-state-highlight",
+        update: function () {
+          updateCounters();
+          saveState();
+        }
+      }).disableSelection();
+    });
+  </script>
+
+</body>
+
+</html>
