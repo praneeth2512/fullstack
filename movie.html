@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Advanced Movie Recommender</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #2d89ef;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        .movie-card {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .movie-card img {
+            width: 150px;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .movie-info {
+            text-align: left;
+        }
+
+        .movie-info h2 {
+            margin: 0 0 10px;
+            color: #2d89ef;
+        }
+
+        .movie-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎥 Advanced Movie Recommendation</h1>
+    <button onclick="recommendMovie()">Recommend Me a Movie 🍿</button>
+
+    <div id="movieDisplay"></div>
+
+    <script>
+        const movies = [
+            {
+                title: "Kalki-2898AD",
+                year: 2024,
+                genre: "Sci-Fi, Thriller",
+                rating: "8.8/10",
+                poster: "kalki.jpg"
+            },
+            {
+                title: "Adipurush",
+                year: 2023,
+                genre: "Mythology,Drama",
+                rating: "9.3/10",
+                poster: "adi.jpg"
+            },
+            {
+                title: "Saaho",
+                year: 2018,
+                genre: "Action,Drama,Crime",
+                rating: "8.6/10",
+                poster: "saaho.jpg"
+            },
+            {
+                title: "Rajasaab",
+                year: 2025,
+                genre: "Comedy,horror,thriller",
+                rating: "9.0/10",
+                poster: "raja.jpg"
+            },
+            {
+                title: "Bahubali2 -The Conclusion ",
+                year: 2017,
+                genre: "periodic, Drama",
+                rating: "8.6/10",
+                poster: "bahubali.jpg"
+            }
+        ];
+
+        function recommendMovie() {
+            const randomIndex = Math.floor(Math.random() * movies.length);
+            const movie = movies[randomIndex];
+
+            const movieHTML = `
+                <div class="movie-card">
+                    <img src="${movie.poster}" alt="${movie.title} Poster">
+                    <div class="movie-info">
+                        <h2>${movie.title} (${movie.year})</h2>
+                        <p><strong>Genre:</strong> ${movie.genre}</p>
+                        <p><strong>Rating:</strong> ${movie.rating}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('movieDisplay').innerHTML = movieHTML;
+        }
+    </script>
+
+</body>
+
+</html>

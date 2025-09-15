@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>🌟 Advanced To-Do List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            padding: 40px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        input#newTask {
+            padding: 10px;
+            width: 300px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        button#addTask {
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            background-color: #6aef2d67;
+            color: white;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border: 1px solid #cccccc;
+            margin: 6px 0;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.2s ease;
+        }
+
+        li.completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        input.edit {
+            width: 100%;
+            padding: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+        }
+
+        button.delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🌟 Advanced To-Do List</h2>
+
+    <input type="text" id="newTask" placeholder="Enter new task...">
+    <button id="addTask">➕ Add Task</button>
+
+    <ul id="todo">
+        <li><span class="taskText">Plan weekend trip</span> <button class="delete">🗑️</button></li>
+        <li><span class="taskText">Read 20 pages of a book</span> <button class="delete">🗑️</button></li>
+        <li><span class="taskText">Organize desk</span> <button class="delete">🗑️</button></li>
+    </ul>
+
+    <script>
+        $(document).ready(function () {
+
+            // Add new task
+            $('#addTask').click(function () {
+                let taskText = $('#newTask').val().trim();
+                if (taskText !== "") {
+                    let newItem = $('<li><span class="taskText"></span> <button class="delete">🗑️</button></li>');
+                    newItem.find('.taskText').text(taskText);
+                    $('#todo').append(newItem);
+                    $('#newTask').val("");
+                }
+            });
+
+            // Delete task
+            $('#todo').on('click', '.delete', function () {
+                $(this).parent().remove();
+            });
+
+            // Mark as completed on clicking text
+            $('#todo').on('click', '.taskText', function () {
+                $(this).parent().toggleClass('completed');
+            });
+
+            // Edit task on double-click
+            $('#todo').on('dblclick', '.taskText', function () {
+                let currentText = $(this).text();
+                let input = $("<input type='text' class='edit'>").val(currentText);
+                $(this).replaceWith(input);
+                input.focus();
+
+                input.keydown(function (e) {
+                    if (e.key === "Enter") {
+                        let updatedText = $(this).val().trim();
+                        if (updatedText === "") updatedText = "Untitled Task";
+                        let span = $("<span class='taskText'></span>").text(updatedText);
+                        $(this).replaceWith(span);
+                    }
+                });
+
+                input.blur(function () {
+                    let updatedText = $(this).val().trim();
+                    if (updatedText === "") updatedText = "Untitled Task";
+                    let span = $("<span class='taskText'></span>").text(updatedText);
+                    $(this).replaceWith(span);
+                });
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
