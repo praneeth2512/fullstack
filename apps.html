@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📱 Advanced App Recommender</title>
+<style>
+body { font-family: Arial; background: #f4f4f4; max-width: 1000px; margin: 30px auto; padding: 20px; }
+h1,h2 { text-align:center; color: #333; }
+nav { text-align:center; margin-bottom:20px; }
+nav button { margin:5px; padding:10px 15px; cursor:pointer; border:none; border-radius:5px; background:#2d89ef; color:white; font-size:16px; }
+.app-card { display:flex; align-items:center; background:white; padding:15px; margin:10px 0; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.1); cursor:pointer; }
+.app-card img { width:80px; height:80px; border-radius:10px; margin-right:15px; }
+#appModal { display:none; position:fixed; top:10%; left:10%; width:80%; background:white; padding:20px; border-radius:10px; box-shadow:0 8px 16px rgba(0,0,0,0.25); z-index:1000; max-height:80%; overflow:auto; }
+#overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:500; }
+ul { list-style:none; padding:0; }
+ul li { padding:5px 0; background:#eef; margin:3px 0; border-radius:4px; }
+textarea { width:100%; margin-top:5px; }
+button.review-btn { margin-top:5px; background:#2d89ef; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; }
+button.watchlist-btn { margin-top:5px; background:#ff8c00; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:4px; }
+</style>
+</head>
+<body>
+
+<h1>📱 Advanced App Recommender</h1>
+
+<nav>
+<button onclick="showApp('all')">All Apps</button>
+<button onclick="showApp('favorites')">Favorites</button>
+<button onclick="showApp('reviews')">Reviews</button>
+</nav>
+
+<!-- Filters & Search -->
+<div id="allAppFilters" style="text-align:center; margin-bottom:15px;">
+<input type="text" id="searchInput" placeholder="Search app by name..." onkeyup="renderFilteredApps()">
+<select id="sortSelect" onchange="renderFilteredApps()">
+<option value="rating">Sort by Rating ↓</option>
+<option value="name">Sort by Name A-Z</option>
+</select>
+<select id="purposeSelect" onchange="renderFilteredApps()">
+<option value="All">All Purposes</option>
+<option value="Productivity">Productivity</option>
+<option value="Education">Education</option>
+<option value="Entertainment">Entertainment</option>
+<option value="Health">Health & Fitness</option>
+<option value="Finance">Finance</option>
+<option value="Utility">Utility</option>
+</select>
+</div>
+
+<!-- All Apps -->
+<div id="allApps"></div>
+
+<!-- Favorites -->
+<div id="favorites" class="app-section" style="display:none;">
+<h2>⭐ My Favorite Apps</h2>
+<div id="favoriteList"></div>
+</div>
+
+<!-- Reviews -->
+<div id="reviews" class="app-section" style="display:none;">
+<h2>📝 App Reviews</h2>
+<select id="reviewAppSelect" onchange="showReviews()"></select>
+<textarea id="reviewInput" rows="3" placeholder="Write your review..."></textarea><br>
+<button class="review-btn" onclick="submitReview()">Submit Review</button>
+<div id="reviewList"></div>
+</div>
+
+<!-- Modal -->
+<div id="overlay" onclick="closeModal()"></div>
+<div id="appModal">
+<span style="float:right; cursor:pointer;" onclick="closeModal()">❌ Close</span>
+<div id="modalContent"></div>
+</div>
+
+<script>
+// App Data
+const apps = [
+{name:"Notion", purpose:"Productivity", rating:4.8, description:"All-in-one workspace for notes, tasks, and projects.", logo:"https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg", link:"https://www.notion.so/"},
+{name:"Duolingo", purpose:"Education", rating:4.7, description:"Learn languages easily with fun lessons.", logo:"https://upload.wikimedia.org/wikipedia/commons/c/c1/Duolingo_logo.svg", link:"https://www.duolingo.com/"},
+{name:"Spotify", purpose:"Entertainment", rating:4.7, description:"Stream millions of songs and podcasts.", logo:"https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg", link:"https://www.spotify.com/"},
+{name:"Headspace", purpose:"Health", rating:4.6, description:"Meditation and mindfulness app.", logo:"https://upload.wikimedia.org/wikipedia/en/e/e8/Headspace_logo.svg", link:"https://www.headspace.com/"},
+{name:"Mint", purpose:"Finance", rating:4.5, description:"Track your finances and budget easily.", logo:"https://upload.wikimedia.org/wikipedia/en/f/fb/Mint_logo.svg", link:"https://www.mint.com/"},
+{name:"Todoist", purpose:"Productivity", rating:4.7, description:"Task manager to organize your day.", logo:"https://upload.wikimedia.org/wikipedia/commons/5/50/Todoist_logo.png", link:"https://todoist.com/"},
+{name:"Khan Academy", purpose:"Education", rating:4.6, description:"Free educational lessons for students.", logo:"https://upload.wikimedia.org/wikipedia/commons/4/44/Khan_Academy_logo.svg", link:"https://www.khanacademy.org/"},
+{name:"Netflix", purpose:"Entertainment", rating:4.5, description:"Watch movies, series, and shows online.", logo:"https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", link:"https://www.netflix.com/"},
+{name:"MyFitnessPal", purpose:"Health", rating:4.6, description:"Track diet and exercise easily.", logo:"https://upload.wikimedia.org/wikipedia/en/4/4a/MyFitnessPal_logo.svg", link:"https://www.myfitnesspal.com/"},
+{name:"CamScanner", purpose:"Utility", rating:4.5, description:"Scan documents and save as PDF.", logo:"https://upload.wikimedia.org/wikipedia/en/f/f2/Camscanner_logo.png", link:"https://www.camscanner.com/"}
+];
+
+let reviews = JSON.parse(localStorage.getItem('reviews')||"{}");
+let favorites = JSON.parse(localStorage.getItem('favorites')||"[]");
+
+// Navigation
+function showApp(app){
+    document.getElementById('allApps').style.display = (app==='all')?'block':'none';
+    document.getElementById('favorites').style.display = (app==='favorites')?'block':'none';
+    document.getElementById('reviews').style.display = (app==='reviews')?'block':'none';
+    if(app==='favorites') renderFavorites();
+    if(app==='reviews') populateReviewSelect();
+}
+
+// Render All Apps
+function renderFilteredApps(){
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const sort = document.getElementById('sortSelect').value;
+    const purpose = document.getElementById('purposeSelect').value;
+    let filtered = apps.filter(a=>a.name.toLowerCase().includes(search));
+    if(purpose!=='All') filtered = filtered.filter(a=>a.purpose===purpose);
+    if(sort==='rating') filtered.sort((a,b)=>b.rating-a.rating);
+    else filtered.sort((a,b)=>a.name.localeCompare(b.name));
+    renderApps(filtered,'allApps');
+}
+
+// Render Apps
+function renderApps(list, containerId){
+    const html = list.map(a=>`
+        <div class="app-card">
+            <img src="${a.logo}">
+            <div>
+                <h3>${a.name}</h3>
+                <p>⭐ ${a.rating} | ${a.purpose}</p>
+                <button class="watchlist-btn" onclick="toggleFavorite(event,'${a.name}')">⭐ Favorite</button>
+                <button class="review-btn" onclick="openModal('${a.name}')">ℹ️ Details</button>
+            </div>
+        </div>
+    `).join('');
+    document.getElementById(containerId).innerHTML = html;
+}
+
+// Modal
+function openModal(name){
+    const app = apps.find(a=>a.name===name);
+    document.getElementById('modalContent').innerHTML = `
+        <h2>${app.name}</h2>
+        <img src="${app.logo}" width="150">
+        <p>${app.description}</p>
+        <p><strong>Purpose:</strong> ${app.purpose}</p>
+        <p><strong>Rating:</strong> ${app.rating}</p>
+        <a href="${app.link}" target="_blank">🔗 Visit App</a>
+    `;
+    document.getElementById('appModal').style.display='block';
+    document.getElementById('overlay').style.display='block';
+}
+function closeModal(){
+    document.getElementById('appModal').style.display='none';
+    document.getElementById('overlay').style.display='none';
+}
+
+// Reviews
+function populateReviewSelect(){
+    const sel = document.getElementById('reviewAppSelect');
+    sel.innerHTML = apps.map(a=>`<option value="${a.name}">${a.name}</option>`).join('');
+    showReviews();
+}
+function submitReview(){
+    const app = document.getElementById('reviewAppSelect').value;
+    const text = document.getElementById('reviewInput').value.trim();
+    if(!text) return alert('Write a review!');
+    if(!reviews[app]) reviews[app]=[];
+    reviews[app].push(text);
+    localStorage.setItem('reviews', JSON.stringify(reviews));
+    document.getElementById('reviewInput').value='';
+    showReviews();
+}
+function showReviews(){
+    const app = document.getElementById('reviewAppSelect').value;
+    const list = reviews[app] || [];
+    document.getElementById('reviewList').innerHTML = list.map(r=>`<div class="review">${r}</div>`).join('') || "<p>No reviews yet.</p>";
+}
+
+// Favorites
+function toggleFavorite(event,name){
+    event.stopPropagation();
+    if(favorites.includes(name)) favorites = favorites.filter(f=>f!==name);
+    else favorites.push(name);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    renderFavorites();
+}
+function renderFavorites(){
+    const list = favorites.map(f=>apps.find(a=>a.name===f)).filter(Boolean);
+    renderApps(list,'favoriteList');
+}
+
+// Initial render
+renderFilteredApps();
+</script>
+
+</body>
+</html>
