@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced To-Do List (jQuery)</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+  }
+
+  h2 {
+    color: #2d89ef;
+    text-align: center;
+  }
+
+  #taskInput {
+    padding: 10px;
+    width: 70%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  #addBtn {
+    padding: 10px 15px;
+    border: none;
+    background-color: #2d89ef;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  #addBtn:hover {
+    background-color: #1b5fa8;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  li {
+    padding: 12px 10px;
+    margin: 8px 0;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: 0.2s;
+  }
+
+  li:hover {
+    background-color: #e8f0fe;
+  }
+
+  .done {
+    text-decoration: line-through;
+    color: gray;
+  }
+
+  .task-buttons button {
+    margin-left: 5px;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .completeBtn {
+    background-color: #28a745;
+    color: white;
+  }
+
+  .completeBtn:hover {
+    background-color: #1e7e34;
+  }
+
+  .deleteBtn {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .deleteBtn:hover {
+    background-color: #a71d2a;
+  }
+</style>
+</head>
+<body>
+
+<h2>Advanced To-Do List</h2>
+
+<div style="text-align:center;">
+  <input type="text" id="taskInput" placeholder="Enter a task">
+  <button id="addBtn">Add Task</button>
+</div>
+
+<ul id="taskList"></ul>
+
+<script>
+$(document).ready(function(){
+  // Load tasks from localStorage
+  let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+  tasks.forEach(task => addTaskToDOM(task.text, task.done));
+
+  // Add new task
+  $("#addBtn").click(function(){
+    let taskText = $("#taskInput").val().trim();
+    if(taskText === "") return alert("Please enter a task!");
+    
+    addTaskToDOM(taskText, false);
+    tasks.push({text: taskText, done: false});
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    
+    $("#taskInput").val("");
+  });
+
+  // Complete / Delete actions
+  $(document).on("click", ".completeBtn", function(){
+    const li = $(this).parent();
+    li.toggleClass("done");
+    
+    const index = li.index();
+    tasks[index].done = !tasks[index].done;
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  });
+
+  $(document).on("click", ".deleteBtn", function(){
+    const index = $(this).parent().index();
+    tasks.splice(index, 1);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    $(this).parent().remove();
+  });
+
+  // Function to add task to DOM
+  function addTaskToDOM(taskText, done){
+    const li = $(`
+      <li class="${done ? 'done' : ''}">
+        <span>${taskText}</span>
+        <div class="task-buttons">
+          <button class="completeBtn">Complete</button>
+          <button class="deleteBtn">Delete</button>
+        </div>
+      </li>
+    `);
+    $("#taskList").append(li);
+  }
+});
+</script>
+
+</body>
+</html>
