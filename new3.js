@@ -17,14 +17,14 @@ console.log(name1);
 name1 = "hi";      // var variables can be reassigned
 console.log(name1);
 
-let course = "cse";  // Fixed typo
+let course = "csm";  // Fixed typo
 
-let age = 20;
+let age = 18;
 console.log(age);
-age = 21;
+age = 19;
 console.log(age);
 
-const givename = "srivasa rit";
+const givename = "srivasa ramanujan institute of technology";
 console.log(givename);
 
 // The following would cause an error because const cannot be reassigned:
