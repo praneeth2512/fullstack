@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next-Level CRM Dashboard</title>
+<style>
+/* --- General Styles --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f7f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    background: #fff;
+    padding: 25px;
+    margin: 20px;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 750px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* --- Dashboard Stats --- */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.stat-box {
+    background: #007BFF;
+    color: white;
+    padding: 12px 20px;
+    margin: 5px;
+    border-radius: 8px;
+    flex: 1 1 30%;
+    text-align: center;
+}
+.stat-box span { font-weight: bold; font-size: 18px; }
+
+/* --- Form --- */
+form input, form textarea, form select {
+    width: 100%; padding: 12px; margin-bottom: 12px;
+    border-radius: 6px; border: 1px solid #ccc; transition: border 0.2s;
+}
+form input:focus, form textarea:focus, form select:focus {
+    border-color: #007BFF; outline: none;
+}
+form button {
+    width: 100%; padding: 12px;
+    border: none; border-radius: 6px;
+    background: #28a745; color: white; font-weight: bold;
+    cursor: pointer; transition: background 0.2s;
+}
+form button:hover { background: #1e7e34; }
+
+/* --- Controls --- */
+.controls {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;
+}
+.controls input { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+.controls button { padding: 10px; border-radius: 6px; border: none; background: #17a2b8; color: white; cursor: pointer; transition: background 0.2s; }
+.controls button:hover { background: #117a8b; }
+
+/* --- Contact Cards --- */
+.messages { max-height: 450px; overflow-y: auto; margin-bottom: 15px; }
+.message {
+    background: #fefefe; padding: 15px; border-radius: 8px; margin-bottom: 12px;
+    position: relative; cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.message:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+.message.dragging { opacity: 0.7; box-shadow: 0 12px 25px rgba(0,0,0,0.2); }
+
+.message button { position: absolute; top: 12px; border-radius: 4px; border: none; padding: 4px 8px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+.edit-btn { right: 70px; background: #ffc107; color: white; }
+.edit-btn:hover { background: #e0a800; }
+.delete-btn { right: 10px; background: #dc3545; color: white; }
+.delete-btn:hover { background: #b02a37; }
+
+/* --- Dynamic Tags --- */
+.tags {
+    display: inline-block;
+    padding: 2px 8px; border-radius: 12px;
+    font-size: 12px; color: white; margin-right: 5px; margin-bottom: 5px;
+}
+
+/* --- Pagination --- */
+.pagination { text-align: center; margin-top: 10px; }
+.pagination button { margin: 0 3px; padding: 5px 10px; cursor: pointer; border-radius: 5px; border: 1px solid #333; background: white; transition: background 0.2s; }
+.pagination button.active { background: #333; color: white; }
+
+/* --- Modal --- */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background: rgba(0,0,0,0.6); }
+.modal-content { background: white; margin: 8% auto; padding: 25px; border-radius: 10px; width: 450px; position: relative; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+.modal-close { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; color: #333; }
+.modal-close:hover { color: #000; }
+
+/* --- Responsive --- */
+@media(max-width: 768px){
+    .container { width: 95%; padding: 15px; }
+    .stats { flex-direction: column; gap: 10px; }
+    .stat-box { flex: 1 1 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>CRM Dashboard</h1>
+
+  <!-- Dashboard Stats -->
+  <div class="stats">
+    <div class="stat-box">Total Contacts: <span id="totalContacts">0</span></div>
+    <div class="stat-box">Categories: <span id="categoryCount">0</span></div>
+    <div class="stat-box">Unique Tags: <span id="tagCount">0</span></div>
+  </div>
+
+  <!-- Add Contact Form -->
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <select id="category">
+      <option value="Personal">Personal</option>
+      <option value="Business">Business</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="text" id="tags" placeholder="Tags (comma separated)">
+    <textarea id="message" placeholder="Message" required></textarea>
+    <button type="submit">Add Contact</button>
+  </form>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search by name/email/category/tag">
+    <button id="sortBtn">Sort A-Z</button>
+    <input type="text" id="filterTag" placeholder="Filter by tags (comma separated)">
+    <button id="exportBtn">Export JSON</button>
+  </div>
+
+  <!-- Contact Cards -->
+  <div class="messages" id="messagesContainer"></div>
+  <div class="pagination" id="paginationContainer"></div>
+
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <h3>Edit Contact</h3>
+    <input type="text" id="editName" placeholder="Name">
+    <input type="email" id="editEmail" placeholder="Email">
+    <select id="editCategory">
+      <option value="Personal">Personal</option>
+      <option value="Business">Business</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="text" id="editTags" placeholder="Tags (comma separated)">
+    <textarea id="editMessage" placeholder="Message"></textarea>
+    <button id="updateBtn">Update Contact</button>
+  </div>
+</div>
+
+<script>
+// --- JavaScript for Next-Level CRM --- 
+let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+let editIndex = null;
+let currentPage = 1;
+const itemsPerPage = 5;
+
+// --- Tag Color Map ---
+const tagColors = {};
+const colors = ['#007bff','#28a745','#6c757d','#17a2b8','#ffc107','#dc3545','#6610f2','#fd7e14'];
+function getTagColor(tag){
+  tag = tag.toLowerCase();
+  if(!tagColors[tag]) tagColors[tag]=colors[Object.keys(tagColors).length % colors.length];
+  return tagColors[tag];
+}
+
+// --- Stats ---
+function updateStats(){
+  document.getElementById('totalContacts').textContent = contacts.length;
+  const categories = [...new Set(contacts.map(c=>c.category))].length;
+  document.getElementById('categoryCount').textContent = categories;
+  const tags = [...new Set(contacts.flatMap(c=>c.tags.map(t=>t.toLowerCase())))].length;
+  document.getElementById('tagCount').textContent = tags;
+}
+
+// --- Pagination ---
+function paginate(list){ const start=(currentPage-1)*itemsPerPage; return list.slice(start,start+itemsPerPage); }
+
+// --- Display Contacts ---
+function displayContacts(list = contacts){
+  let filteredList = list;
+  // Multi-tag filter
+  const filterTags = document.getElementById('filterTag').value.split(',').map(t=>t.trim().toLowerCase()).filter(t=>t!=='');
+  if(filterTags.length>0){
+    filteredList = filteredList.filter(c => filterTags.every(ft=>c.tags.map(t=>t.toLowerCase()).includes(ft)));
+  }
+  // Search
+  const searchQuery = document.getElementById('search').value.toLowerCase();
+  if(searchQuery) filteredList = filteredList.filter(c =>
+    c.name.toLowerCase().includes(searchQuery) ||
+    c.email.toLowerCase().includes(searchQuery) ||
+    c.category.toLowerCase().includes(searchQuery) ||
+    c.tags.some(t=>t.toLowerCase().includes(searchQuery))
+  );
+  const paginated = paginate(filteredList);
+  const container = document.getElementById('messagesContainer');
+  container.innerHTML='';
+  paginated.forEach((c,i)=>{
+    const div = document.createElement('div');
+    div.classList.add('message'); div.draggable=true;
+    const tagsHtml = c.tags.map(t=>`<span class="tags" style="background:${getTagColor(t)}">${t}</span>`).join(' ');
+    div.innerHTML = `<strong>${c.name}</strong> (${c.email})<br>
+      <em>${c.category}</em><br>${tagsHtml}<p>${c.message}</p>
+      <button class="edit-btn" onclick="editContact(${contacts.indexOf(c)})">Edit</button>
+      <button class="delete-btn" onclick="deleteContact(${contacts.indexOf(c)})">Delete</button>`;
+    container.appendChild(div);
+
+    // Drag and drop
+    div.addEventListener('dragstart', e=>{e.dataTransfer.setData('text/plain', contacts.indexOf(c));});
+    div.addEventListener('dragover', e=>{e.preventDefault();});
+    div.addEventListener('drop', e=>{
+      e.preventDefault();
+      const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+      const toIndex = contacts.indexOf(c);
+      const moved = contacts.splice(fromIndex,1)[0];
+      contacts.splice(toIndex,0,moved);
+      localStorage.setItem('contacts',JSON.stringify(contacts));
+      displayContacts();
+    });
+  });
+
+  // Pagination buttons
+  const totalPages = Math.ceil(filteredList.length/itemsPerPage);
+  const pagDiv = document.getElementById('paginationContainer');
+  pagDiv.innerHTML='';
+  for(let i=1;i<=totalPages;i++){
+    const btn=document.createElement('button');
+    btn.textContent=i;
+    if(i===currentPage) btn.classList.add('active');
+    btn.addEventListener('click',()=>{currentPage=i; displayContacts();});
+    pagDiv.appendChild(btn);
+  }
+
+  updateStats();
+}
+
+// --- Add Contact ---
+document.getElementById('contactForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const category = document.getElementById('category').value;
+  const tags = document.getElementById('tags').value.split(',').map(t=>t.trim()).filter(t=>t!=='');
+  const message = document.getElementById('message').value;
+  contacts.push({name,email,category,tags,message});
+  localStorage.setItem('contacts',JSON.stringify(contacts));
+  displayContacts();
+  e.target.reset();
+});
+
+// --- Edit Contact ---
+function editContact(index){
+  editIndex=index;
+  const c=contacts[index];
+  document.getElementById('editName').value=c.name;
+  document.getElementById('editEmail').value=c.email;
+  document.getElementById('editCategory').value=c.category;
+  document.getElementById('editTags').value=c.tags.join(',');
+  document.getElementById('editMessage').value=c.message;
+  document.getElementById('editModal').style.display='block';
+}
+
+document.getElementById('modalClose').addEventListener('click', ()=>document.getElementById('editModal').style.display='none');
+document.getElementById('updateBtn').addEventListener('click', ()=>{
+  const c=contacts[editIndex];
+  c.name=document.getElementById('editName').value;
+  c.email=document.getElementById('editEmail').value;
+  c.category=document.getElementById('editCategory').value;
+  c.tags=document.getElementById('editTags').value.split(',').map(t=>t.trim()).filter(t=>t!=='');
+  c.message=document.getElementById('editMessage').value;
+  localStorage.setItem('contacts',JSON.stringify(contacts));
+  document.getElementById('editModal').style.display='none';
+  displayContacts();
+});
+
+// --- Delete Contact ---
+function deleteContact(index){ contacts.splice(index,1); localStorage.setItem('contacts',JSON.stringify(contacts)); displayContacts(); }
+
+// --- Sort A-Z ---
+document.getElementById('sortBtn').addEventListener('click', ()=>{
+  contacts.sort((a,b)=>a.name.localeCompare(b.name));
+  displayContacts();
+});
+
+// --- Search ---
+document.getElementById('search').addEventListener('input', displayContacts);
+
+// --- Filter Tags ---
+document.getElementById('filterTag').addEventListener('input', ()=>{currentPage=1; displayContacts();});
+
+// --- Export JSON ---
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const dataStr="data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contacts,null,2));
+  const dlAnchor=document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download","contacts.json");
+  dlAnchor.click();
+});
+
+// Initial display
+displayContacts();
+</script>
+</body>
+</html>
