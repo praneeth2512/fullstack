@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Engineering Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #222;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        .calculator {
+            background: #333;
+            padding: 20px;
+            border-radius: 12px;
+            width: 360px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        #display {
+            width: 100%;
+            height: 50px;
+            font-size: 1.8em;
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #000;
+            color: #0f0;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        button {
+            width: 22%;
+            margin: 1%;
+            height: 50px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: none;
+            background: #555;
+            color: white;
+            cursor: pointer;
+        }
+
+        button.operator {
+            background: orange;
+            color: white;
+        }
+
+        button.equals {
+            background: #007aff;
+            color: white;
+        }
+
+        button.function {
+            background: #666;
+            color: white;
+        }
+
+        button.zero {
+            width: 47%;
+        }
+
+        #history {
+            background: #444;
+            color: #fff;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+        <input type="text" id="display" disabled placeholder="0"/>
+
+        <div class="buttons">
+            <button onclick="clearDisplay()" class="function">AC</button>
+            <button onclick="backspace()" class="function">⌫</button>
+            <button onclick="appendMemory()" class="function">M+</button>
+            <button onclick="recallMemory()" class="function">MR</button>
+
+            <button onclick="pressFunction('Math.sin(')" class="function">sin</button>
+            <button onclick="pressFunction('Math.cos(')" class="function">cos</button>
+            <button onclick="pressFunction('Math.tan(')" class="function">tan</button>
+            <button onclick="pressFunction('Math.log(')" class="function">log</button>
+
+            <button onclick="pressFunction('Math.sqrt(')" class="function">√</button>
+            <button onclick="pressOperator('(')" class="operator">(</button>
+            <button onclick="pressOperator(')')" class="operator">)</button>
+            <button onclick="pressOperator('/')" class="operator">÷</button>
+
+            <button onclick="pressNumber('7')">7</button>
+            <button onclick="pressNumber('8')">8</button>
+            <button onclick="pressNumber('9')">9</button>
+            <button onclick="pressOperator('*')" class="operator">×</button>
+
+            <button onclick="pressNumber('4')">4</button>
+            <button onclick="pressNumber('5')">5</button>
+            <button onclick="pressNumber('6')">6</button>
+            <button onclick="pressOperator('-')" class="operator">−</button>
+
+            <button onclick="pressNumber('1')">1</button>
+            <button onclick="pressNumber('2')">2</button>
+            <button onclick="pressNumber('3')">3</button>
+            <button onclick="pressOperator('+')" class="operator">+</button>
+
+            <button onclick="pressNumber('0')" class="zero">0</button>
+            <button onclick="pressDot()">.</button>
+            <button onclick="calculate()" class="equals">=</button>
+        </div>
+
+        <div id="history">
+            <h4>History</h4>
+            <div id="historyContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const historyContent = document.getElementById('historyContent');
+        let memory = 0;
+
+        function pressNumber(num) {
+            display.value += num;
+        }
+
+        function pressOperator(op) {
+            display.value += op;
+        }
+
+        function pressDot() {
+            const parts = display.value.split(/[\+\-\*\/\(\)]/);
+            const lastPart = parts[parts.length - 1];
+            if (!lastPart.includes('.')) {
+                display.value += '.';
+            }
+        }
+
+        function pressFunction(fn) {
+            display.value += fn;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        function backspace() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function calculate() {
+            try {
+                const sanitized = display.value.replace(/[^0-9+\-*/().Mathsincoagtqrtlog ]/g, '');
+                const result = Function(`return ${sanitized}`)();
+                if (result === undefined) throw 'Error';
+                addHistory(`${display.value} = ${result}`);
+                display.value = result;
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function addHistory(entry) {
+            const p = document.createElement('p');
+            p.textContent = entry;
+            historyContent.prepend(p);
+        }
+
+        function appendMemory() {
+            memory = display.value ? parseFloat(display.value) : 0;
+        }
+
+        function recallMemory() {
+            display.value += memory;
+        }
+    </script>
+
+</body>
+
+</html>
